@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+    volumes:
+      - type: bind
+        source: ./app
+        target: /app
+    ports:
+      - 3000:3000
+    tty: true
