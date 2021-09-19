@@ -1,13 +1,92 @@
+html,
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 0;
+}
+
+.wrapper::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: -5px;
+  right: -5px;
+  background: inherit;
+  filter: blur(3px);
+  z-index: -1;
+}
+
+.wrapper .char {
+  font-family: "Hiragino Kaku Gothic Pro", "游ゴシック体", "Yu Gothic", YuGothic,
+    Meiryo, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+}
+
+.controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 5px;
+  z-index: 100;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+}
+
+.control .ui.button {
+  margin-right: 5px;
+  flex-grow: 0;
+}
+
+.control .ui.button:last-child {
+  margin-right: 0;
+}
+
+.control .seekbar {
+  flex-grow: 1;
+  padding: 0 10px;
+}
+
+.media {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 20;
+}
+
+@import 'https://fonts.googleapis.com/css?family=Roboto+Mono:100';
+
+.container {
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.text {
+  font-weight: 100;
+  font-size: 28px;
+  color: #FAFAFA;
+}
+
+.dud {
+  color: #757575;
 }
