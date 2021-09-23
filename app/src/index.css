@@ -7,18 +7,18 @@ body {
   right: 0px;
   top: 0px;
   bottom: 0px;
+  background: rgb(43 44 52);
+  font-family: "Hiragino Kaku Gothic Pro", "游ゴシック体", "Yu Gothic", YuGothic,
+    Meiryo, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .wrapper {
   height: 100vh;
   display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 0;
 }
 
 .wrapper::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -5px;
   bottom: -5px;
@@ -30,9 +30,17 @@ body {
 }
 
 .wrapper .char {
-  font-family: "Hiragino Kaku Gothic Pro", "游ゴシック体", "Yu Gothic", YuGothic,
-    Meiryo, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #FAFAFA;
   margin: auto;
+  font-size: 8vh;
+}
+
+.credit {
+  position: absolute;
+  left: 20px;
+  bottom: 10px;
+  color: #FAFAFA;
+  font-size: 3vh;
 }
 
 .controls {
@@ -71,22 +79,6 @@ body {
   z-index: 20;
 }
 
-@import 'https://fonts.googleapis.com/css?family=Roboto+Mono:100';
-
-.container {
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
-
-.text {
-  font-weight: 100;
-  font-size: 28px;
-  color: #FAFAFA;
-}
-
-.dud {
+.gw-glitched {
   color: #757575;
 }

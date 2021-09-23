@@ -1,114 +1,90 @@
-import { type } from "os";
 import React, { useEffect, useState, createRef, useMemo } from "react";
 import { Player } from "textalive-app-api";
-
 import { PlayerControl } from "./PlayerControl";
-
-const defaultFontSize = 10;
-const defaultColor = "#000";
-
-const sansSerif = `"Hiragino Kaku Gothic Pro", "游ゴシック体", "Yu Gothic", YuGothic, Meiryo, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif`;
-const serif = `"Times New Roman", YuMincho, "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif`;
+import GlitchedWriter, { wait, presets, queueWrite } from "glitched-writer";
 
 export const Body = () => {
-
   const [player, setPlayer] = useState<Player | null>(null);
   const [app, setApp] = useState<any | null>(null);
-  const [char, setChar] = useState("");
-  const [fontFamily, setFontFamily] = useState(sansSerif);
-  const [fontSize, setFontSize] = useState(defaultFontSize);
-  const [color, setColor] = useState(defaultColor);
-  const [darkMode, setDarkMode] = useState(false);
-  const [mediaElement, setMediaElement] = useState<HTMLElement | string | null>(null);
-
-  const div = useMemo(() => <div className="media" ref={setMediaElement} />, []);
+  const [char, setChar] = useState<string[]>([]);
+  const [credit, setCredit] = useState([
+    "First Note",
+    "Music/Lyrics: blues",
+    "Vocal: Miku",
+  ]);
+  const [mediaElement, setMediaElement] = useState<HTMLElement | string | null>(
+    null
+  );
+  const div = useMemo(
+    () => <div className="media" ref={setMediaElement} />,
+    []
+  );
+  const envInfo = {
+    API_KEY: process.env.API_KEY || "apikey",
+    APP_NAME: process.env.APP_NAME || "Glitch lyrics writer",
+    APP_AUTHOR: process.env.APP_AUTHOR || "Suganuma3510",
+  };
 
   useEffect(() => {
     if (typeof window === "undefined" || !mediaElement) {
       return;
     }
-    const el = document.querySelector<HTMLElement>('.char')
+    const charEl = document.querySelector<HTMLElement>(".char");
+    const creditEl = document.querySelector<HTMLElement>(".credit");
 
-    console.log("--- [app] create Player instance ---");
     const p = new Player({
       app: {
-        token: "jitZJDSOlKS4ETfu",
-        appName: "Params example",
-        appAuthor: "Jun Kato",
-        parameters: [
-          {
-            title: "フォントの種類",
-            name: "fontFamily",
-            className: "Select",
-            params: [
-              [serif, "明朝体"],
-              [sansSerif, "ゴシック体"],
-            ],
-            initialValue: sansSerif,
-          },
-          {
-            title: "フォントサイズ",
-            name: "fontSize",
-            className: "Slider",
-            params: [0, 100],
-            initialValue: defaultFontSize,
-          },
-          {
-            title: "テキスト色",
-            name: "color",
-            className: "Color",
-            initialValue: defaultColor,
-          },
-          {
-            title: "ダークモード",
-            name: "darkMode",
-            className: "Check",
-            initialValue: false,
-          },
-        ],
+        token: envInfo.API_KEY,
+        appName: envInfo.APP_NAME,
+        appAuthor: envInfo.APP_AUTHOR,
       },
       mediaElement,
     });
 
+    const charWriter = new GlitchedWriter(
+      charEl,
+      { ...presets.neo, letterize: true },
+      toString
+    );
+    const creditWriter = new GlitchedWriter(
+      creditEl,
+      { ...presets.neo, letterize: true },
+      toString
+    );
+
     const playerListener = {
       onAppReady: (app: any) => {
-        console.log("--- [app] initialized as TextAlive app ---");
-        console.log("managed:", app.managed);
-        console.log("host:", app.host);
-        console.log("song url:", app.songUrl);
         if (!app.songUrl) {
-          p.createFromSongUrl("http://www.youtube.com/watch?v=bMtYf3R0zhY");
+          p.createFromSongUrl("https://piapro.jp/t/FDb1/20210213190029", {
+            video: {
+              // 音楽地図訂正履歴: https://songle.jp/songs/2121525/history
+              beatId: 3953882,
+              repetitiveSegmentId: 2099561,
+              // 歌詞タイミング訂正履歴: https://textalive.jp/lyrics/piapro.jp%2Ft%2FFDb1%2F20210213190029
+              lyricId: 52065,
+              lyricDiffId: 5093,
+            },
+          });
         }
         setApp(app);
       },
-      onAppParameterUpdate: (name: string, value: any) => {
-        console.log(`[app] parameters.${name} update:`, value);
-        if (name === "fontFamily") {
-          setFontFamily(value);
-        }
-        if (name === "fontSize") {
-          setFontSize(value);
-        }
-        if (name === "color") {
-          const color = value;
-          setColor(`rgb(${color.r}, ${color.g}, ${color.b})`);
-        }
-        if (name === "darkMode") {
-          setDarkMode(!!value);
-        }
-      },
       onVideoReady: () => {
-        console.log("--- [app] video is ready ---");
-        console.log("player:", p);
-        console.log("player.data.song:", p.data.song);
-        console.log("player.data.song.name:", p.data.song.name);
-        console.log("player.data.song.artist.name:", p.data.song.artist.name);
-        console.log("player.data.songMap:", p.data.songMap);
         let c = p.video.firstPhrase;
+        creditWriter.queueWrite(credit, 8000, true);
         while (c && c.next) {
           c.animate = (now, u) => {
             if (u.startTime <= now && u.endTime > now) {
-              setChar(u.text);
+              let isNextPhrase: boolean = false;
+
+              setChar((char) => {
+                if (char[0] != u.text) {
+                  isNextPhrase = true;
+                }
+                return [u.text];
+              });
+              if (isNextPhrase) {
+                charWriter.write(u.text);
+              }
             }
           };
           c = c.next;
@@ -119,7 +95,6 @@ export const Body = () => {
 
     setPlayer(p);
     return () => {
-      console.log("--- [app] shutdown ---");
       p.removeListener(playerListener);
       p.dispose();
     };
@@ -132,24 +107,10 @@ export const Body = () => {
           <PlayerControl disabled={app.managed} player={player} />
         </div>
       )}
-      <div
-        className="wrapper"
-        style={{
-          backgroundImage: 'url("https://img.youtube.com/vi/bMtYf3R0zhY/maxresdefault.jpg")',
-          backgroundSize: "cover",
-        }}
-      >
-        <div
-          className="char"
-          style={{
-            fontFamily,
-            fontSize: `${fontSize}vh`,
-            color,
-          }}
-        >
-          {char}
-        </div>
+      <div className="wrapper">
+        <div className="char"></div>
       </div>
+      <div className="credit"></div>
       {div}
     </>
   );
