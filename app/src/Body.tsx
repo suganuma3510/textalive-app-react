@@ -8,18 +8,19 @@ export const Body = () => {
   const [player, setPlayer] = useState<Player | null>(null);
   const [app, setApp] = useState<any | null>(null);
   const [char, setChar] = useState<string[]>([]);
+  const [mediaElement, setMediaElement] = useState<HTMLElement | null>(null);
   const [credit, setCredit] = useState([
     "First Note",
     "Music/Lyrics: blues",
     "Vocal: Miku",
   ]);
-  const [mediaElement, setMediaElement] = useState<HTMLElement | string | null>(
-    null
-  );
+
   const div = useMemo(
     () => <div className="media" ref={setMediaElement} />,
     []
   );
+
+  // 環境変数を定義
   const envInfo = {
     API_KEY: process.env.API_KEY || "apikey",
     APP_NAME: process.env.APP_NAME || "Glitch lyrics writer",
@@ -27,9 +28,7 @@ export const Body = () => {
   };
 
   useEffect(() => {
-    if (typeof window === "undefined" || !mediaElement) {
-      return;
-    }
+    if (typeof window === "undefined" || !mediaElement) return;
     const charEl = document.querySelector<HTMLElement>(".char");
     const creditEl = document.querySelector<HTMLElement>(".credit");
 
@@ -42,11 +41,13 @@ export const Body = () => {
       mediaElement,
     });
 
+    // 歌詞のフレーズ用グリッチアニメーション
     const charWriter = new GlitchedWriter(
       charEl,
       { ...presets.neo, changeChance: 2, letterize: true },
       toString
     );
+    // 楽曲のクレジット用グリッチアニメーション
     const creditWriter = new GlitchedWriter(
       creditEl,
       { ...presets.neo, changeChance: 2, letterize: true },
@@ -56,6 +57,8 @@ export const Body = () => {
     const playerListener = {
       onAppReady: (app: any) => {
         if (!app.songUrl) {
+          // blues / First Note
+          // https://piapro.jp/t/FDb1/20210213190029
           p.createFromSongUrl("https://piapro.jp/t/FDb1/20210213190029", {
             video: {
               // 音楽地図訂正履歴: https://songle.jp/songs/2121525/history
@@ -70,22 +73,25 @@ export const Body = () => {
         setApp(app);
       },
       onVideoReady: () => {
+        // 歌詞をフレーズごとに取得
         let c = p.video.firstPhrase;
+        // 楽曲のクレジットを表示するアニメーションを実行
         creditWriter.queueWrite(credit, 8000, true);
+
+        // 歌詞のフレーズが切り替わるタイミングでテキストのアニメーションを実行
         while (c && c.next) {
           c.animate = (now, u) => {
             if (u.startTime <= now && u.endTime > now) {
+              // 次の歌詞のフレーズに切り替わるタイミングを判定
               let isNextPhrase: boolean = false;
 
+              // 現在表示している歌詞のフレーズを char にセット
               setChar((char) => {
-                if (char[0] != u.text) {
-                  isNextPhrase = true;
-                }
+                if (char[0] != u.text) isNextPhrase = true;
                 return [u.text];
               });
-              if (isNextPhrase) {
-                charWriter.write(u.text);
-              }
+              // true の場合、テキストのアニメーションを実行
+              if (isNextPhrase) charWriter.write(u.text);
             }
           };
           c = c.next;
@@ -113,6 +119,7 @@ export const Body = () => {
       </div>
       <div className="credit"></div>
       <div className="background-animation">
+        {/* 粒子をマウスホバー時に接続させる背景アニメーション */}
         <Particles
           id="tsparticles"
           options={{

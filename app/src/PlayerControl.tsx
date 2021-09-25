@@ -36,6 +36,7 @@ export const PlayerControl = ({
 
   return (
     <div className="control">
+      {/* 再生・一時停止ボタン */}
       <Button
         inverted
         circular
@@ -47,6 +48,8 @@ export const PlayerControl = ({
       >
         <Icon name={status !== "play" ? "play" : "pause"} />
       </Button>
+
+      {/* 停止ボタン */}
       <Button
         inverted
         circular
@@ -58,6 +61,7 @@ export const PlayerControl = ({
       >
         <Icon name="stop" />
       </Button>
+
       <div className="seekbar">
         <PlayerSeekbar player={!disabled && player} />
       </div>
