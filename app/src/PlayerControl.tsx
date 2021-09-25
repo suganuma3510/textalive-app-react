@@ -1,8 +1,14 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Button } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 import { PlayerSeekbar } from "textalive-react-api";
 
-export const PlayerControl = ({ disabled, player }: {disabled: any,player: any}) => {
+export const PlayerControl = ({
+  disabled,
+  player,
+}: {
+  disabled: any;
+  player: any;
+}) => {
   const [status, setStatus] = useState("stop");
 
   useEffect(() => {
@@ -15,30 +21,43 @@ export const PlayerControl = ({ disabled, player }: {disabled: any,player: any})
     return () => player.removeListener(listener);
   }, [player]);
 
-  const handlePlay = useCallback(() => player && player.requestPlay(), [
-    player,
-  ]);
-  const handlePause = useCallback(() => player && player.requestPause(), [
-    player,
-  ]);
-  const handleStop = useCallback(() => player && player.requestStop(), [
-    player,
-  ]);
+  const handlePlay = useCallback(
+    () => player && player.requestPlay(),
+    [player]
+  );
+  const handlePause = useCallback(
+    () => player && player.requestPause(),
+    [player]
+  );
+  const handleStop = useCallback(
+    () => player && player.requestStop(),
+    [player]
+  );
 
   return (
     <div className="control">
       <Button
-        content={status !== "play" ? "再生" : "一時停止"}
+        inverted
+        circular
+        color={status !== "play" ? "orange" : "yellow"}
+        size="big"
+        icon
         onClick={status !== "play" ? handlePlay : handlePause}
-        size="small"
         disabled={disabled}
-      />
+      >
+        <Icon name={status !== "play" ? "play" : "pause"} />
+      </Button>
       <Button
-        content="停止"
+        inverted
+        circular
+        color="green"
+        size="big"
+        icon
         onClick={handleStop}
-        size="small"
         disabled={disabled || status === "stop"}
-      />
+      >
+        <Icon name="stop" />
+      </Button>
       <div className="seekbar">
         <PlayerSeekbar player={!disabled && player} />
       </div>

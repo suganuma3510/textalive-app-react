@@ -44,12 +44,12 @@ export const Body = () => {
 
     const charWriter = new GlitchedWriter(
       charEl,
-      { ...presets.neo, letterize: true },
+      { ...presets.neo, changeChance: 2, letterize: true },
       toString
     );
     const creditWriter = new GlitchedWriter(
       creditEl,
-      { ...presets.neo, letterize: true },
+      { ...presets.neo, changeChance: 2, letterize: true },
       toString
     );
 
@@ -415,7 +415,7 @@ export const Body = () => {
                 },
                 random: false,
                 size: false,
-                speed: 3,
+                speed: 2,
                 spin: {
                   acceleration: 0,
                   enable: false,
