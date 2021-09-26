@@ -7,7 +7,7 @@
 **Demo:** https://suganuma3510.github.io/textalive-app-demo/
 
 ## 使用楽曲
-**First Note**
+**First Note**  
 blues さん
 
 楽曲：https://piapro.jp/t/FDb1  
@@ -38,7 +38,9 @@ yarn start
   https://developer.textalive.jp/
 - Glitched Writer  
   https://github.com/thetarnav/glitched-writer
-- tsParticles - TypeScript Particles 
+- tsParticles - TypeScript Particles  
   https://github.com/matteobruni/tsparticles
 - Semantic UI React  
   https://github.com/Semantic-Org/Semantic-UI-React
+
+## ライセンス：MIT
