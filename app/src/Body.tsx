@@ -22,7 +22,7 @@ export const Body = () => {
 
   // 環境変数を定義
   const envInfo = {
-    API_KEY: process.env.API_KEY || "apikey",
+    API_KEY: process.env.API_KEY || "jitZJDSOlKS4ETfu",
     APP_NAME: process.env.APP_NAME || "Glitch lyrics writer",
     APP_AUTHOR: process.env.APP_AUTHOR || "Suganuma3510",
   };
