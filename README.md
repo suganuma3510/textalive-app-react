@@ -4,7 +4,7 @@
 楽曲の歌詞をグリッチアニメーションで表示するWebアプリケーション  
 またランダムに動く光の粒子をマウスホバーすると、粒子同士を繋げるアニメーションを表示する
 
-**Demo:** https://suganuma3510.github.io/textalive-app-demo/
+**Demo:** https://suganuma3510.github.io/textalive-app-react/
 
 ## 使用楽曲
 **First Note**  
